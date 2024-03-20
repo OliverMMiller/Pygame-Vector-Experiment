@@ -1,9 +1,9 @@
 import pygame, sys
 from pygame.locals import *
 pygame.init()
-screenWidth = 1000
-screenHight = 1000
-screen = pygame.display.set_mode((screenWidth, screenHight), )
+screenWidth = 750
+screenHight = 750
+screen = pygame.display.set_mode((screenWidth, screenHight))
 
 white = "#ffffff"
 red = "#ff0000"
@@ -12,8 +12,10 @@ green = "#00ff00"
 
 origin = pygame.math.Vector2(screenWidth/2,screenHight/2)
 VectorRed = origin/2
-VectorBlue = VectorRed.copy
-VectorGreen = VectorRed.copy
+VectorBlue = pygame.math.Vector2(origin.x/2, 1)
+VectorGreen = pygame.math.Vector2(0, 1)
+
+#print(origin + VectorGreen)
 
 running = True
 while running:
@@ -22,21 +24,34 @@ while running:
     if event.type == QUIT:
         running = False
     elif event.type == MOUSEBUTTONDOWN:
-        print(event.button)
+        #print(event.button)
+        #print(event.pos)
         if event.button == 1:
-            VectorBlue = event.pos
+            VectorBlue = pygame.math.Vector2(event.pos) - origin
         elif event.button == 3:
-            VectorRed = event.pos
+            VectorRed = pygame.math.Vector2(event.pos) - origin
+        print(VectorGreen)
 
     screen.fill(white)
     
-    VectorGreen = VectorRed.dot(VectorBlue)
+    VectorGreen = pygame.math.Vector2(0, VectorRed.dot(VectorBlue)*10**-4 - origin.y)
 
-    for i in range(3):
-        Vector = [VectorRed, VectorBlue, VectorGreen][i]
-        color = [red, blue, green][i]
-        pygame.draw.circle(screen, color, origin, 20)
-        pygame.draw.line(screen, color, origin, Vector, width=3)
+    # VectorList = [VectorRed, VectorBlue, VectorGreen]
+    # colorList = [red, blue, green]
+    # for i in range(3):
+    #     Vector = VectorList[i]
+    #     pygame.draw.circle(screen, colorList[i], (origin + Vector), 20)
+    #     pygame.draw.line(screen, colorList[i], origin, Vector, width=3)
+
+    pygame.draw.circle(screen, red, (origin + VectorRed), 15)
+    pygame.draw.line(screen, red, origin, (origin + VectorRed), width=4)
+
+    pygame.draw.circle(screen, blue, (origin + VectorBlue), 15)
+    pygame.draw.line(screen, blue, origin, (origin + VectorBlue), width=4)
+
+    pygame.draw.circle(screen, green, (origin + VectorGreen), 15)
+    pygame.draw.line(screen, green, origin, (origin + VectorGreen), width=4)
+
 
 
     pygame.display.update()
